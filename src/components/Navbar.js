@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../assets/khanak_m_stylish_logo.jpeg';
+import logo from '../assets/khanak_m_stylish_logo.jpg';
 import { FaGithub, FaInstagram, FaLinkedin, FaTwitter } from 'react-icons/fa';
 
 const Navbar = () => {
@@ -7,7 +7,7 @@ const Navbar = () => {
     <nav className='flex items-center justify-between py-6'>
       <div className="flex flex-shrink-0 items-center">
         <a href='/' aria-label='Home'>
-          <img src={logo} className='mx-5' width={100} alt='Logo'></img>
+          <img src={logo} className='mx-5' width={50} alt='Logo'></img>
         </a>
       </div>
 
