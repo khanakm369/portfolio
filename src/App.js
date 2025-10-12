@@ -20,6 +20,7 @@ const App = () => {
           <Projects/>
           <Experience/>
           <Contact/>
+          
         </div>
    </div>
   )
