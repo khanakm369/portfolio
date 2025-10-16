@@ -1,60 +1,82 @@
-// api/callback.js
-const express = require('express');
 const axios = require('axios');
-const cookieParser = require('cookie-parser');
 const querystring = require('querystring');
-const app = express();
-app.use(cookieParser());
+const cookieParser = require('cookie-parser');
 
-app.get('/api/callback', async (req, res) => {
-  const code = req.query.code || null;
-  const state = req.query.state || null;
-  const storedState = req.cookies ? req.cookies.spotify_auth_state : null;
-
-  // 1. Security check: Verify state
-  if (state === null || state !== storedState) {
-    return res.redirect('/#' + querystring.stringify({ error: 'state_mismatch' }));
-  }
-
-  // Clear the state cookie
-  res.clearCookie('spotify_auth_state');
-
-  // 2. Prepare for Token Exchange (using Basic Authorization)
-  const authHeader = Buffer.from(
-    `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
-  ).toString('base64');
-
-  try {
-    const response = await axios({
-      method: 'post',
-      url: 'https://accounts.spotify.com/api/token',
-      data: querystring.stringify({
-        grant_type: 'authorization_code',
-        code: code,
-        redirect_uri: process.env.SPOTIFY_REDIRECT_URI,
-      }),
-      headers: {
-        'Authorization': `Basic ${authHeader}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+// Helper to manually run cookie-parser middleware in Vercel's handler format
+const parser = cookieParser();
+const runMiddleware = (req, res, fn) => {
+    return new Promise((resolve, reject) => {
+        fn(req, res, (result) => {
+            if (result instanceof Error) {
+                return reject(result);
+            }
+            return resolve(result);
+        });
     });
+};
 
-    const { access_token, refresh_token, expires_in } = response.data;
+module.exports = async (req, res) => {
+    // 1. Apply middleware to read cookies (for state verification)
+    await runMiddleware(req, res, parser); 
 
-    // 3. CRITICAL: Securely store the refresh_token. 
-    // For a personal Vercel app, you would typically update a persistent secret on Vercel 
-    // (like SPOTIFY_REFRESH_TOKEN) using the Vercel CLI, or a simple database.
-    // For now, we'll store it in a cookie for development, but THIS IS NOT SECURE FOR PRODUCTION
-    // (We'll assume you'll replace this with a secure server-side store later)
-    res.cookie('spotify_refresh_token', refresh_token, { httpOnly: true, secure: true, maxAge: 365 * 24 * 60 * 60 * 1000 }); // 1 year
+    const code = req.query.code || null;
+    const state = req.query.state || null;
+    // Read the state cookie set in api/login.js
+    const storedState = req.cookies ? req.cookies.spotify_auth_state : null;
+    
+    // --- STATE VERIFICATION (Security Check) ---
+    if (state === null || state !== storedState) {
+        // Clear the state cookie and redirect on mismatch
+        res.setHeader('Set-Cookie', 'spotify_auth_state=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0');
+        // Redirect back to the frontend with a failure status
+        return res.redirect(`/spotify?status=failure&reason=state_mismatch`);
+    }
 
-    // 4. Redirect back to your React app, passing the access token (for immediate use)
-    res.redirect(`/#/spotify?` + querystring.stringify({ access_token, expires_in }));
+    // Clear the state cookie after successful verification
+    res.setHeader('Set-Cookie', 'spotify_auth_state=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0');
 
-  } catch (error) {
-    res.send('Failed to exchange token.');
-  }
-});
+    // --- TOKEN EXCHANGE (Server-to-Server Request) ---
+    try {
+        const tokenResponse = await axios({
+            method: 'post',
+            url: 'https://accounts.spotify.com/api/token',
+            data: querystring.stringify({
+                grant_type: 'authorization_code',
+                code: code,
+                // CRITICAL: Must match the URI used in /api/login and the Spotify Dashboard
+                redirect_uri: process.env.SPOTIFY_REDIRECT_URI 
+            }),
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                // Authorization header uses Base64 encoding of CLIENT_ID:CLIENT_SECRET
+                'Authorization': 'Basic ' + Buffer.from(
+                    process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET
+                ).toString('base64')
+            }
+        });
 
-// Vercel requires the function to be exported
-module.exports = app;
+        const { access_token, refresh_token, expires_in } = tokenResponse.data;
+        
+        // --- TOKEN STORAGE (HttpOnly Cookies) ---
+        // Access Token (short-lived, 1 hour)
+        res.setHeader(
+            'Set-Cookie', 
+            `spotify_access_token=${access_token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${expires_in}`
+        );
+        
+        // Refresh Token (long-lived, used for renewing tokens later)
+        // Max-Age=2592000 is approximately 30 days
+        res.appendHeader(
+            'Set-Cookie', 
+            `spotify_refresh_token=${refresh_token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000` 
+        );
+
+        // --- FINAL REDIRECT ---
+        // Redirect back to the frontend (e.g., your portfolio page) to handle the success status
+        res.redirect(`/spotify?status=success`);
+
+    } catch (error) {
+        console.error('Token exchange failed:', error.response?.data || error.message);
+        res.redirect(`/spotify?status=failure&reason=token_exchange`);
+    }
+};

@@ -60,9 +60,9 @@ const Contact = () => {
           {CONTACT.phoneNo}
         </motion.p>
 
-        {/* Email Link */}
+        {/* Email Link: UPDATED href to use mailto: */}
         <motion.a
-          href="#"
+          href={`mailto:${CONTACT.email}`} // This will open the user's default email client
           className="border-b"
           variants={contactVariants}
           initial="hidden"

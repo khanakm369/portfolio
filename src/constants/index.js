@@ -4,7 +4,41 @@ import project3 from "../assets/projects/project-3.webp";
 import project4 from "../assets/projects/project-4.webp";
 import project5 from "../assets/projects/project-5.webp.jpg"
 import project6 from "../assets/projects/project6.png"
-export const HERO_CONTENT = "I am a passionate full stack developer with a knack for crafting robust and scalable web applications. With 2.6+ years of hands-on experience, I have honed my skills in front-end technologies like React and Next.js, as well as back-end technologies like Node.js, MySQL, PostgreSQL, and MongoDB. My goal is to leverage my expertise to create innovative solutions that drive business growth and deliver exceptional user experiences.";
+import project7 from "../assets/projects/project7.webp";
+
+const calculateExperienceDuration = () => {
+    // Start date for the experience: June 1, 2023
+    const startDate = new Date('2023-06-01');
+    const today = new Date();
+
+    let years = today.getFullYear() - startDate.getFullYear();
+    let months = today.getMonth() - startDate.getMonth();
+
+    // Adjust for negative months (if current month is before start month)
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    // Format the output string
+    const yearStr = years === 1 ? 'year' : 'years';
+    const monthStr = months === 1 ? 'month' : 'months';
+
+    if (years === 0) {
+        return `${months} ${monthStr}`;
+    }
+
+    if (months === 0) {
+        return `${years} ${yearStr}`;
+    }
+
+    return `${years} ${yearStr} and ${months} ${monthStr}`;
+};
+
+const DYNAMIC_DURATION = calculateExperienceDuration();
+
+// --- HERO CONTENT ---
+export const HERO_CONTENT = `I am a passionate full stack developer with a knack for crafting robust and scalable web applications. With ${DYNAMIC_DURATION} of hands-on experience, I have honed my skills in front-end technologies like React and Next.js, as well as back-end technologies like Node.js, MySQL, PostgreSQL, and MongoDB. My goal is to leverage my expertise to create innovative solutions that drive business growth and deliver exceptional user experiences.`;
 
 export const ABOUT_TEXT = "I am a dedicated and versatile full stack developer with a passion for creating efficient and user-friendly web applications. With 5 years of professional experience, I have worked with a variety of technologies, including React, Next.js, Node.js, MySQL, PostgreSQL, and MongoDB. My journey in web development began with a deep curiosity for how things work, and it has evolved into a career where I continuously strive to learn and adapt to new challenges. I thrive in collaborative environments and enjoy solving complex problems to deliver high-quality solutions. Outside of coding, I enjoy staying active, exploring new technologies, and contributing to open-source projects.";
 
@@ -27,6 +61,14 @@ export const EXPERIENCES = [
 
 export const PROJECTS = [
   {
+    title: "Advocates Consultation Website– Highly Scalable (Try it out - click here)",
+    image: project7,
+    description: "Spearheaded the end-to-end development of the instantvakil legal consultation platform. This involved building the application from scratch, managing hosting infrastructure, and implementing extensive SEO strategies to achieve top search rankings. Focus areas included optimizing the codebase for an extremely lightweight and high-performance user experience, ensuring 100% responsiveness across all mobile and desktop devices, and integrating a robust, multi-channel consultation booking system.",
+    technologies: ["Next.js", "JavaScript", "Tailwind CSS", "SEO Optimization", "Node.js", "MongoDB", "Cloud Hosting - Vercel", " Firebase(Auth)"],
+    link: "https://www.instantvakil.com"
+  }
+  ,
+  {
     title: "E-Commerce Website – Highly Scalable",
     image: project1,
     description: "Developed a feature-rich e-commerce platform capable of handling high traffic volumes, ensuring scalability and security. Integrated functionalities such as dynamic product listings, secure shopping cart, and user authentication. Focused on optimizing frontend and backend performance and set up CI/CD pipelines for seamless updates and maintenance.",
@@ -43,6 +85,7 @@ export const PROJECTS = [
     image: project3,
     description: "Designed a personal portfolio website to showcase professional skills, projects, and achievements. Built a fully responsive, high-performance site following modern web design principles and deployed it on Vercel for easy updates.",
     technologies: ["JSX", "TailwindCSS", "React", "Vercel"],
+    link: "https://khanak-portfolio.vercel.app/"
   },
   {
     title: "Blogging Platform",
@@ -62,6 +105,7 @@ export const PROJECTS = [
     description: "Designed and built a portfolio site to demonstrate expertise, showcasing an optimized and engaging user experience. Fully responsive, optimized for performance, and deployed on Vercel.",
     technologies: ["JSX", "TailwindCSS", "React", "Vercel" , "WebRTC" , "Zegocloud"],
   },
+
 ];
 
 
@@ -69,4 +113,5 @@ export const CONTACT = {
   address: "Bangalore, India",
   phoneNo: "+91 8296660515",
   email: "khanakm369@gmail.com",
+  
 };

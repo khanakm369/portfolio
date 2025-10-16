@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { PROJECTS } from '../constants';
 
 // Animation variants for the projects
+
+// Animation variants for the projects
 const projectVariants = {
   hidden: { opacity: 0, y: 50 }, // Initially hidden (slid down and invisible)
   visible: (i) => ({
@@ -59,14 +61,27 @@ const Projects = () => {
             </div>
 
             <div className='w-full max-w-xl lg:w-3/4 p-4'>
-              <h3 className='mb-2 font-semibold text-2xl'>{project.title}</h3>
+              {/* Conditional link wrapping the title */}
+              {project.link ? (
+                <a 
+                  href={project.link} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="inline-block cursor-pointer hover:text-cyan-400 transition-colors" // Added a hover color for visual feedback
+                >
+                  <h3 className='mb-2 font-semibold text-2xl'>{project.title}</h3>
+                </a>
+              ) : (
+                <h3 className='mb-2 font-semibold text-2xl'>{project.title}</h3>
+              )}
+              
               <p className='mb-4 text-stone-400'>{project.description}</p>
 
               {/* Loop through project.technologies */}
               <div className='flex flex-wrap'>
-                {project.technologies.map((tech, index) => (
+                {project.technologies.map((tech, techIndex) => (
                   <span
-                    key={index}
+                    key={techIndex}
                     className='mr-2 rounded bg-stone-900 p-2 text-sm font-medium text-stone-300'
                   >
                     {tech}
