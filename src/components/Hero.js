@@ -79,7 +79,7 @@ const Hero = () => {
             {/* View Resume Link */}
             <motion.a
               variants={childVariants}
-              href="https://drive.google.com/file/d/1O6JEa8-nYXzwcR7AElcYG4Afgy2ai7HA/view?usp=drive_link"
+              href="https://drive.google.com/file/d/1x2MCJnTZG1qokFBwS8Q-_DcxHE--nH5D/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3 mt-4 text-black bg-white rounded-full hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
