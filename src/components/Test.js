@@ -16,7 +16,7 @@ const Test = () => {
 
     try {
      //   console.log("API URL:", process.env.REACT_APP_API_URL);
-     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/test/user`, {
+     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/test/user`, {
       //  const response = await fetch(`http://localhost:4000/api/test/user`, {
         method: "POST",
         headers: {
