@@ -15,7 +15,9 @@ const Test = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/test/user`, {
+     //   console.log("API URL:", process.env.REACT_APP_API_URL);
+     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/test/user`, {
+      //  const response = await fetch(`http://localhost:4000/api/test/user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +41,7 @@ const Test = () => {
 
     } catch (error) {
       console.error("Error:", error);
-      alert("❌ Something went wrong while submitting data!");
+      alert("❌ Something went wrong while submitting data!" + error + "macha");
     }
   };
 
