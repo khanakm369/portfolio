@@ -10,8 +10,12 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+    res.send("✅ API is running successfully! You are at the backend home route 🎯");
+});
 
 // Routes
+
 app.use("/api/test", router);
 
 const PORT = process.env.PORT || 3000
