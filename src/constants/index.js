@@ -81,7 +81,7 @@ export const PROJECTS = [
     technologies: ["JSX", "TailwindCSS", "React", "API", "Firebase", "CI/CD"],
   },
   {
-    title: "Portfolio Website",
+    title: "Portfolio Website - Upgraded with (payment gatway , Mock Interview)",
     image: project3,
     description: "Designed a personal portfolio website to showcase professional skills, projects, and achievements. Built a fully responsive, high-performance site following modern web design principles and deployed it on Vercel for easy updates.",
     technologies: ["JSX", "TailwindCSS", "React", "Vercel"],
