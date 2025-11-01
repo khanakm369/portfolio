@@ -4,7 +4,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './Home.js';
-
+import Test from './components/Test.js';
 // Remove direct imports for Hero, Technologies, Projects, etc.
 
 const App = () => {
@@ -30,7 +30,7 @@ const App = () => {
                   {/* Default Route: Shows the full portfolio content */}
                   <Route path="/" element={<Home />} /> 
                   
-                  
+                  <Route path='/test' element={<Test/>} />
                   
                   {/* Optional: Catch-all route for 404s */}
                   <Route path="*" element={
